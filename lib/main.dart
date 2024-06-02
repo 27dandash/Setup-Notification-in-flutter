@@ -4,6 +4,12 @@ import 'package:permission_handler/permission_handler.dart';
 // import 'package:workmanager/workmanager.dart';
 import 'notification_service.dart';
 
+//edit main activity
+//edit manifest.xml
+//edit yamal
+// start to add sound
+// start to add workmanger and background services
+
 // const String taskName = "backgroundNotificationTask";
 void main() {
   runApp(const MyApp());
