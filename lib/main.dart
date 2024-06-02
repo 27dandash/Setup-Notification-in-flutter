@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'notification_service.dart';
 import 'work_always.dart';
 
@@ -38,6 +39,8 @@ class _NotificationSenderState extends State<NotificationSender> {
   void initState() {
     super.initState();
     _startSendingNotifications();
+    _requestNotificationPermission();
+
   }
 
   @override
@@ -45,7 +48,14 @@ class _NotificationSenderState extends State<NotificationSender> {
     _timer.cancel();
     super.dispose();
   }
-
+  Future<void> _requestNotificationPermission() async {
+    PermissionStatus permissionStatus = await Permission.notification.request();
+    if (permissionStatus.isGranted) {
+      // Permission is granted, proceed with app logic
+    } else {
+      // Permission is not granted, show a dialog or message to the user
+    }
+  }
   void _startSendingNotifications() {
     _timer = Timer.periodic(const Duration(seconds: 10), (Timer timer) {
       _sendNotification();

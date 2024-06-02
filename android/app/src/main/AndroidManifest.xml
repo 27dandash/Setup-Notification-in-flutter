@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.part4"> <!-- Ensure this matches the package name in your MainActivity file -->
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
@@ -22,12 +24,28 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <receiver android:name="com.dexterous.flutterlocalnotifications.receivers.ActionBroadcastReceiver"
             android:exported="true"/>
         <receiver android:name="com.dexterous.flutterlocalnotifications.receivers.DismissedReceiver"
             android:exported="true"/>
         <receiver android:name="com.dexterous.flutterlocalnotifications.receivers.NotificationBroadcastReceiver"
             android:exported="true"/>
+
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+            android:enabled="true"
+            android:exported="true"
+            tools:replace="android:exported">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
+            android:exported="true"
+            tools:replace="android:exported"/>
 
         <receiver android:name="com.dexterous.flutterlocalnotifications.receivers.RebootBroadcastReceiver"
             android:enabled="true"
