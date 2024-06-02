@@ -1,13 +1,22 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+// import 'package:workmanager/workmanager.dart';
 import 'notification_service.dart';
-import 'work_always.dart';
 
+// const String taskName = "backgroundNotificationTask";
 void main() {
   runApp(const MyApp());
 }
-
+// void main() {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   Workmanager().initialize(
+//     callbackDispatcher,
+//     isInDebugMode: true,
+//   );
+//   scheduleBackgroundTask();
+//   runApp(MyApp());
+// }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -27,10 +36,6 @@ class NotificationSender extends StatefulWidget {
 }
 
 class _NotificationSenderState extends State<NotificationSender> {
-  // final NotificationServiceWorkAlaways notificationServiceWorkAlaways =
-  // NotificationServiceWorkAlaways();
-  final CombinedNotificationService notificationService = CombinedNotificationService();
-
   late Timer _timer;
   int _currentIndex = 0;
   final List<String> _dataList = ["Data 1", "Data 2", "Data 3"];
@@ -40,6 +45,7 @@ class _NotificationSenderState extends State<NotificationSender> {
     super.initState();
     _startSendingNotifications();
     _requestNotificationPermission();
+    // _scheduleBackgroundNotification();
 
   }
 
@@ -51,28 +57,30 @@ class _NotificationSenderState extends State<NotificationSender> {
   Future<void> _requestNotificationPermission() async {
     PermissionStatus permissionStatus = await Permission.notification.request();
     if (permissionStatus.isGranted) {
-      // Permission is granted, proceed with app logic
     } else {
-      // Permission is not granted, show a dialog or message to the user
     }
   }
   void _startSendingNotifications() {
-    _timer = Timer.periodic(const Duration(seconds: 10), (Timer timer) {
+    _timer = Timer.periodic(const Duration(minutes: 5), (Timer timer) {
       _sendNotification();
     });
   }
-
+  // void _scheduleBackgroundNotification() {
+  //   Workmanager().registerPeriodicTask(
+  //     "1",
+  //     taskName,
+  //     frequency: Duration(minutes: 15), // You can set your desired interval here
+  //   );
+  // }
   void _sendNotification() {
     if (_dataList.isNotEmpty) {
       String currentItem = _dataList[_currentIndex];
-      CombinedNotificationService.workNotification(
+      NotificationServices.workNotification(
         id: _currentIndex,
         title: 'Scheduled Notification',
         body: 'This is a scheduled notification: $currentItem',
         dataList: _dataList,
       );
-
-      // Update the index to point to the next item in the list
       _currentIndex = (_currentIndex + 1) % _dataList.length;
     }
   }
@@ -87,7 +95,7 @@ class _NotificationSenderState extends State<NotificationSender> {
         children: [
           ElevatedButton(
             onPressed: () {
-              CombinedNotificationService.showNotification(
+              NotificationServices.showNotification(
                 id: 0,
                 title: 'Test Notification',
                 body: 'This is a test notification',
@@ -100,7 +108,7 @@ class _NotificationSenderState extends State<NotificationSender> {
               onPressed: () async {
                 DateTime scheduledTime =
                 DateTime.now().add(const Duration(seconds: 5));
-                await CombinedNotificationService.scheduleNotification(
+                await NotificationServices.scheduleNotification(
                   id: 0,
                   title: 'Scheduled Notification',
                   body: 'This is the body of the scheduled notification.',
