@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 // import 'package:workmanager/workmanager.dart';
+import 'model.dart';
 import 'notification_service.dart';
 
 // const String taskName = "backgroundNotificationTask";
@@ -38,8 +39,11 @@ class NotificationSender extends StatefulWidget {
 class _NotificationSenderState extends State<NotificationSender> {
   late Timer _timer;
   int _currentIndex = 0;
-  final List<String> _dataList = ["Data 1", "Data 2", "Data 3"];
-
+  final List<NotificationItem> _dataList = [
+    NotificationItem(title: "Title 1", body: "Body 1"),
+    NotificationItem(title: "Title 2", body: "Body 2"),
+    NotificationItem(title: "Title 3", body: "Body 3"),
+  ];
   @override
   void initState() {
     super.initState();
@@ -74,11 +78,11 @@ class _NotificationSenderState extends State<NotificationSender> {
   // }
   void _sendNotification() {
     if (_dataList.isNotEmpty) {
-      String currentItem = _dataList[_currentIndex];
+      NotificationItem currentItem = _dataList[_currentIndex];
       NotificationServices.workNotification(
         id: _currentIndex,
-        title: 'Scheduled Notification',
-        body: 'This is a scheduled notification: $currentItem',
+        title: 'Scheduled Notification${currentItem.title}',
+        body: 'This is a scheduled notification: ${currentItem.body}',
         dataList: _dataList,
       );
       _currentIndex = (_currentIndex + 1) % _dataList.length;

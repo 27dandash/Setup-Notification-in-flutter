@@ -3,18 +3,19 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter/material.dart';
 
+import 'model.dart';
+
 class NotificationServices {
-  static final FlutterLocalNotificationsPlugin _notificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+  static final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
 
   static Future<void> initialize() async {
     // Initialize settings for Android
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     // Initialize settings for iOS (Darwin)
     const DarwinInitializationSettings initializationSettingsDarwin =
-    DarwinInitializationSettings(
+        DarwinInitializationSettings(
       requestSoundPermission: true,
       requestBadgePermission: true,
       requestAlertPermission: true,
@@ -23,7 +24,7 @@ class NotificationServices {
 
     // Combine both platform initialization settings
     const InitializationSettings initializationSettings =
-    InitializationSettings(
+        InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsDarwin,
     );
@@ -37,42 +38,15 @@ class NotificationServices {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'channelId', // id
       'channelName', // name
+      // 'chandnelId',
       description: 'This is the description of the channel.', // description
       importance: Importance.high,
     );
 
     await _notificationsPlugin
         .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
-
-    // Request notification permissions
-    await _requestPermissions();
-  }
-
-  static Future<void> _requestPermissions() async {
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
-    // Request permissions for iOS
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    // Request permissions for macOS
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-        MacOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
   }
 
   // For handling notification when app is in foreground
@@ -100,7 +74,7 @@ class NotificationServices {
     String? payload,
   }) async {
     const AndroidNotificationDetails androidDetails =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'channelId', // id
       'channelName', // name
       channelDescription: 'This is the description of the channel.',
@@ -108,23 +82,6 @@ class NotificationServices {
       priority: Priority.high,
       icon: '@mipmap/ic_launcher', // Ensure the icon is set
     );
-
-    const NotificationDetails platformDetails = NotificationDetails(
-      android: androidDetails,
-    );
-
-    try {
-      await _notificationsPlugin.show(
-        id,
-        title,
-        body,
-        platformDetails,
-        payload: payload,
-      );
-      print('Notification shown: $title $body');
-    } catch (e) {
-      print('Error showing notification: $e');
-    }
   }
 
   static Future<void> scheduleNotification({
@@ -136,10 +93,10 @@ class NotificationServices {
   }) async {
     tz.initializeTimeZones();
     final tz.TZDateTime scheduledTZDate =
-    tz.TZDateTime.from(scheduledDate, tz.local);
+        tz.TZDateTime.from(scheduledDate, tz.local);
 
     const AndroidNotificationDetails androidDetails =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'channelId', // id
       'channelName', // name
       channelDescription: 'This is the description of the channel.',
@@ -162,7 +119,7 @@ class NotificationServices {
         payload: payload,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
+            UILocalNotificationDateInterpretation.absoluteTime,
       );
       print('Notification scheduled: $title $body at $scheduledDate');
     } catch (e) {
@@ -174,7 +131,7 @@ class NotificationServices {
     int? id,
     String? title,
     String? body,
-    List<String>? dataList,
+    List<NotificationItem>? dataList,
   }) async {
     if (id == null) {
       print('Error: Notification ID is null');
@@ -193,7 +150,7 @@ class NotificationServices {
     final NotificationDetails platformChannelSpecifics =
     NotificationDetails(android: androidPlatformChannelSpecifics);
 
-    String? dataStr = dataList?.join("\n");
+    String? dataStr = dataList?.map((item) => '${item.title}\n${item.body}').join("\n");
 
     try {
       await _notificationsPlugin.show(
