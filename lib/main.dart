@@ -4,12 +4,13 @@ import 'package:permission_handler/permission_handler.dart';
 // import 'package:workmanager/workmanager.dart';
 import 'model.dart';
 import 'notification_service.dart';
-
-//edit main activity
-//edit manifest.xml
-//edit yamal
-// start to add sound
-// start to add workmanger and background services
+///TODO:How to start Clone This Project :->
+// 1- edit MainActivity in android - app -src - main - kotlin - com.example.@ypurappname
+// 2- edit AndroidManifest.xml  in android - app -src - main - AndroidManifest
+// 3- edit pubspec.yaml
+///TODO:Start in that :->
+// start to add sound for notification
+// start to add workmanger and background services for background
 
 // const String taskName = "backgroundNotificationTask";
 void main() {
